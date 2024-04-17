@@ -1,0 +1,6 @@
+certifi==2024.2.2 ; python_version >= "3.11" and python_version < "4.0"
+chardet==4.0.0 ; python_version >= "3.11" and python_version < "4.0"
+gofilepy-api==0.2.7 ; python_version >= "3.11" and python_version < "4.0"
+idna==2.10 ; python_version >= "3.11" and python_version < "4.0"
+requests==2.25.1 ; python_version >= "3.11" and python_version < "4.0"
+urllib3==1.26.18 ; python_version >= "3.11" and python_version < "4.0"
