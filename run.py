@@ -17,20 +17,22 @@ NEW_LINE: str = "\n" if system() != "Windows" else "\r\n"
 
 
 def UPLOAD():
+    client = GofileClient()
     upload_dir = "./Shares"
     if not os.path.exists(upload_dir):
-        print("Upload folder does not exist")
+        mkdir(upload_dir)
+        print("No files found in 'Shares' folder\n")
+        os.system("pause")
         sys.exit()
-    client = GofileClient()
     up_files = os.listdir(upload_dir)
     if not up_files:
-        print("No files found")
+        print("No files found in 'Shares' folder\n")
+        os.system("pause")
         sys.exit()
     for file in up_files:
         file_path = os.path.join(upload_dir, file)
-    print("\nUploading:", file)
+    print("\nStart uploading:", file)
     task = client.upload(path=file_path)
-
     print(
         f"Download link: \033[34m{task.page_link}\033[0m" + NEW_LINE
     )  # View and download file at this link
@@ -365,7 +367,7 @@ def DOWNLOAD():
             url = input("Enter URL: ")
 
             # Run
-            download_dir = "./Downloads"
+            download_dir = "Downloads"
             os.environ["GF_DOWNLOADDIR"] = download_dir
             _print("\nStart downloading, please wait..." + NEW_LINE)
             Main(url=url, password=password, max_workers=5)
