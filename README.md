@@ -12,7 +12,7 @@
 
 `Shares` - place any files you want to upload here
 
-`Downloads` - all the download files will be saved here 
+`Downloads` - all the downloaded files will be saved here 
 
 
 
