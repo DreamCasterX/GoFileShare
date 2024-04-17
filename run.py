@@ -367,7 +367,9 @@ def DOWNLOAD():
             url = input("Enter URL: ")
 
             # Run
-            download_dir = "Downloads"
+            download_dir = "C:\\Users\\lumik\Desktop\\CloudFileShare\\Downloads"
+            if not os.path.exists(download_dir):
+                mkdir(download_dir)
             os.environ["GF_DOWNLOADDIR"] = download_dir
             _print("\nStart downloading, please wait..." + NEW_LINE)
             Main(url=url, password=password, max_workers=5)
@@ -388,3 +390,5 @@ while True:
         break
     else:
         print("Invalid option, try again")
+
+# TODO: 解決dowanlod path問題: 1. 絕對路近沒問題   2. 我只需要一層不要兩層
