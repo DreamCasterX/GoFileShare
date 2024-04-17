@@ -1,8 +1,9 @@
 # Simple tool to upload and download files on gofile.io (for Free User) 
 
 ### [How to use]
-1.  Run `python run.py`
-2.  Choose and enter an action to upload or download files
+1.  Run `pip install -r requirements.txt`
+2.  Run `python run.py`
+3.  Choose and enter an action to upload or download files
 
 #
 
