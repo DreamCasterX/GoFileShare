@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 gofilepy-api = "^0.2.7"
+gofilepy = "^0.3.1"
 
 
 [build-system]

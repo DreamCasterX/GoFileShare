@@ -1,36 +1,32 @@
 #! /usr/bin/env python3
 
 from gofilepy import GofileClient
-from os import path, mkdir, getcwd, chdir, getenv
+from os import path, environ, mkdir, getcwd, chdir, getenv, listdir, system
 from sys import exit, stdout, stderr
 from typing import Dict, List
 from requests import get, post
 from concurrent.futures import ThreadPoolExecutor
-from platform import system
+from platform import system as ps
 from hashlib import sha256
 from shutil import move
 from time import perf_counter
-import os
-import sys
 
-NEW_LINE: str = "\n" if system() != "Windows" else "\r\n"
+
+NEW_LINE: str = "\n" if ps() != "Windows" else "\r\n"
 
 
 def UPLOAD():
     client = GofileClient()
     upload_dir = "./Shares"
-    if not os.path.exists(upload_dir):
+    if not path.exists(upload_dir):
         mkdir(upload_dir)
-        print("No files found in 'Shares' folder\n")
-        os.system("pause")
-        sys.exit()
-    up_files = os.listdir(upload_dir)
+    up_files = listdir(upload_dir)
     if not up_files:
         print("No files found in 'Shares' folder\n")
-        os.system("pause")
-        sys.exit()
+        system("pause")
+        exit()
     for file in up_files:
-        file_path = os.path.join(upload_dir, file)
+        file_path = path.join(upload_dir, file)
     print("\nStart uploading:", file)
     task = client.upload(path=file_path)
     print(
@@ -79,10 +75,10 @@ def DOWNLOAD():
 
             self._downloaddir: str | None = getenv("GF_DOWNLOADDIR")
 
-            if self._downloaddir and path.exists(self._downloaddir):
+            if self._downloaddir and path.exists(self._downloaddir):  # ./Downloads
                 chdir(self._downloaddir)
 
-            self._root_dir: str = path.join(getcwd(), self._id)
+            self._root_dir: str = path.join(getcwd(), self._id)  # ./Downloads/ID
             self._token: str = self._getToken()
             self._password: str | None = (
                 sha256(password.encode()).hexdigest() if password else None
@@ -93,7 +89,6 @@ def DOWNLOAD():
             self._files_link_list: List[Dict] = []
 
             self._createDir(self._id)
-            chdir(self._id)
             self._parseLinks(self._id, self._token, self._password)
             self._threadedDownloads()
 
@@ -103,8 +98,7 @@ def DOWNLOAD():
 
             :return:
             """
-
-            chdir(self._root_dir)
+            chdir(download_dir + "\\..")  # 先切到最外層
 
             with ThreadPoolExecutor(max_workers=self._max_workers) as executor:
                 for item in self._files_link_list:
@@ -117,7 +111,6 @@ def DOWNLOAD():
             :param dirname: name of the directory to be created.
             :return:
             """
-
             current_dir: str = getcwd()
             filepath: str = path.join(current_dir, dirname)
 
@@ -169,7 +162,8 @@ def DOWNLOAD():
             if path.exists(file_info["path"]):
                 if path.getsize(file_info["path"]) > 0:
                     _print(
-                        f"{file_info['filename']} already exist, skipping." + NEW_LINE
+                        f"\033[33m{file_info['filename']} already exist, skipping.\033[0m"
+                        + NEW_LINE
                     )
 
                     return
@@ -367,10 +361,12 @@ def DOWNLOAD():
             url = input("Enter URL: ")
 
             # Run
-            download_dir = (os.getcwd() + "\\Downloads")
-            if not os.path.exists(download_dir):
+            download_dir = getcwd() + "\\Downloads"
+            if not path.exists(download_dir):
                 mkdir(download_dir)
-            os.environ["GF_DOWNLOADDIR"] = download_dir
+            chdir(download_dir + "\\..")
+
+            environ["GF_DOWNLOADDIR"] = download_dir
             _print("\nStart downloading, please wait..." + NEW_LINE)
             Main(url=url, password=password, max_workers=5)
             print(NEW_LINE)
@@ -391,4 +387,4 @@ while True:
     else:
         print("Invalid option, try again")
 
-# TODO: 1. 解決dowanlod 問題:  我只需要一層不要兩層    2.能夠一次上傳多個檔案
+# TODO: 能夠一次上傳多個檔案
