@@ -51,7 +51,8 @@ def DOWNLOAD():
 
         stderr.write(_str + NEW_LINE)
         stderr.flush()
-
+        print(NEW_LINE)
+        system("pause")
         exit(-1)
 
     def _print(_str: str) -> None:
@@ -73,11 +74,13 @@ def DOWNLOAD():
         ) -> None:
             try:
                 if not url.split("/")[-2] == "d":
-                    die(f"The url probably doesn't have an id in it: {url}")
+                    die(
+                        f"\033[31mThe URL probably doesn't have an ID in it: {url}\033[0m"
+                    )
 
                 self._id: str = url.split("/")[-1]
             except IndexError:
-                die(f"\033[31mSomething is wrong with the url: {url}\033[0m")
+                die(f"\033[31mSomething is wrong with the URL: {url}\033[0m")
 
             self._downloaddir: str | None = getenv("GF_DOWNLOADDIR")
 
