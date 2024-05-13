@@ -16,6 +16,16 @@ from pyperclip import copy
 NEW_LINE: str = "\n" if ps() != "Windows" else "\r\n"
 
 
+print(
+    r"""
+╭───────────────────────────────────────╮
+│        Cloud File Sharing Tool        │
+│                                  v1.0 │
+╰───────────────────────────────────────╯
+"""
+)
+
+
 def UPLOAD():
     client = GofileClient()
     upload_dir = "./Shares"
@@ -384,9 +394,7 @@ def DOWNLOAD():
 
 
 while True:
-    Option = input(
-        NEW_LINE + "Enter an action: (1) Upload   (2) Download   (Q) Quit" + NEW_LINE
-    )
+    Option = input("Enter an action: (1) Upload   (2) Download   (Q) Quit" + NEW_LINE)
     if Option == "1":
         UPLOAD()
         continue
