@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 gofilepy-api = "^0.2.7"
 gofilepy = "^0.3.1"
+pyperclip = "^1.8.2"
 
 
 [build-system]
