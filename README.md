@@ -4,7 +4,8 @@
 1.  Run `pip install -r requirements.txt`
 2.  Run `python run.py`
 3.  Choose and enter an action to upload or download files
-
+4.  Alternatively, you can simply run `Go.exe` on Windows
+   
 #
 
 
