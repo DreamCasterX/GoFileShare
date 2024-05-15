@@ -12,9 +12,7 @@ from shutil import move
 from time import perf_counter
 from pyperclip import copy
 
-
 NEW_LINE: str = "\n" if ps() != "Windows" else "\r\n"
-
 
 print(
     r"""
@@ -34,20 +32,62 @@ def UPLOAD():
     up_files = listdir(upload_dir)
     if not up_files:
         print(f"\033[33mNo files in 'Shares' folder\033[0m {NEW_LINE}")
-        system("pause")
+        system("pause" if ps() == "Windows" else "")
         exit()
-    for file in up_files:
-        file_path = path.join(upload_dir, file)
-        print(f"Starting the upload: \033[32m{file}\033[0m")
 
-    #  測試多檔區
-    ############
+    ######################################################
+    # 一次傳送多檔，產生不同URL，每一項傳輸完就先印出完成
+    print(f"Uploading files, please wait..." + NEW_LINE)
+    with ThreadPoolExecutor() as executor:
+        futures = [
+            executor.submit(upload_file, client, file, upload_dir) for file in up_files
+        ]
 
-    ############
+    total_uploaded = len(futures)
+    success_count = 0
+    for future in futures:
+        filename, page_link = future.result()
+        if page_link is None:
+            continue
+        else:
+            success_count += 1
+    print(
+        f"[Uploaded {success_count} out of {total_uploaded} files]"
+        + NEW_LINE
+        + NEW_LINE
+    )
 
-    task = client.upload(path=file_path)  # 原始單檔正確版本
-    copy(task.page_link)  # Auto copy the URL to clipboard
-    print(f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE)
+
+def upload_file(client, filename, upload_dir):
+    file_path = path.join(upload_dir, filename)
+    try:
+        task = client.upload(path=file_path)
+        copy(task.page_link)
+        print(
+            f"\033[32m{filename}\033[0m{NEW_LINE}Download link: \033[34m{task.page_link}\033[0m{NEW_LINE}",
+            flush=True,
+        )
+        return filename, task.page_link
+    except Exception as e:
+        print(
+            f"\033[31m{filename} - upload FAILED: {e}\033[0m",
+            flush=True,
+        )
+        return filename, None
+
+
+####################################################
+## 一次只能傳送單檔，產生一組URL
+# for file in up_files:
+#     file_path = path.join(upload_dir, file)
+#     print(f"Starting the upload: \033[32m{file}\033[0m")
+
+# task = client.upload(path=file_path)
+# copy(task.page_link)  # Auto copy the URL to clipboard
+# print(
+#     f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE + NEW_LINE
+# )
+####################################################
 
 
 def DOWNLOAD():
@@ -62,7 +102,7 @@ def DOWNLOAD():
         stderr.write(_str + NEW_LINE)
         stderr.flush()
         print(NEW_LINE)
-        system("pause")
+        system("pause" if ps() == "Windows" else "")
         exit(-1)
 
     def _print(_str: str) -> None:
@@ -284,8 +324,8 @@ def DOWNLOAD():
                             _print("\r" + " " * len(message))
 
                             message = (
-                                f"\rDownloading {file_info['filename']}: {part_size + i * len(chunk)}"
-                                f" of {has_size} {round(progress, 1)}% {round(rate, 1)}{unit}"
+                                f"\r{file_info['filename']} - {part_size + i * len(chunk)}"
+                                f" of {has_size} {round(progress, 1)}% {round(rate, 1)}{unit} bytes"
                             )
 
                             _print(message)
@@ -294,7 +334,7 @@ def DOWNLOAD():
                     _print("\r" + " " * len(message))
 
                     message = (
-                        f"\rDownloading \033[32m{file_info['filename']}\033[0m: {path.getsize(filename)} of {has_size} Done!"
+                        f"\r\033[32m{file_info['filename']}\033[0m - {path.getsize(filename)} of {has_size} bytes downloaded"
                         + NEW_LINE
                     )
 
@@ -386,7 +426,7 @@ def DOWNLOAD():
             chdir(download_dir + "\\..")
 
             environ["GF_DOWNLOADDIR"] = download_dir
-            _print("\nStart downloading, please wait..." + NEW_LINE)
+            _print("Downloading files, please wait..." + NEW_LINE + NEW_LINE)
             Main(url=url, password=password, max_workers=5)
             print(NEW_LINE)
         except KeyboardInterrupt:
@@ -404,4 +444,4 @@ while True:
     if Option.lower() == "q":
         break
     else:
-        print("\033[33mInvalid option!\033[0m")
+        print("\033[33mInvalid option!\033[0m" + NEW_LINE)
