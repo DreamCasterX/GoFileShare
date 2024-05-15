@@ -325,7 +325,7 @@ def DOWNLOAD():
 
                             message = (
                                 f"\r{file_info['filename']} - {part_size + i * len(chunk)}"
-                                f" of {has_size} {round(progress, 1)}% {round(rate, 1)}{unit} bytes"
+                                f" of {has_size} bytes  {round(progress, 1)}%  {round(rate, 1)}{unit}"
                             )
 
                             _print(message)
