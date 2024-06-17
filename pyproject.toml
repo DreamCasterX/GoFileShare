@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cloudfileshare"
+name = "gofileshare"
 version = "0.1.0"
 description = ""
 authors = ["Mike Lu <mcumaple@hotmail.com>"]
@@ -7,9 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-gofilepy-api = "^0.2.7"
 gofilepy = "^0.3.1"
 pyperclip = "^1.8.2"
+requests = "^2.32.3"
+gofilepy-api = "^0.2.7"
 
 
 [build-system]
