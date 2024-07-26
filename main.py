@@ -76,18 +76,18 @@ def upload_file(client, filename, upload_dir):
         return filename, None
 
 
-####################################################
-## 一次只能傳送單檔，產生一組URL
-# for file in up_files:
-#     file_path = path.join(upload_dir, file)
-#     print(f"Starting the upload: \033[32m{file}\033[0m")
+###################################################
+# 一次只能傳送單檔，產生一組URL
+    # for file in up_files:
+    #     file_path = path.join(upload_dir, file)
+    #     print(f"Starting the upload: \033[32m{file}\033[0m")
 
-# task = client.upload(path=file_path)
-# copy(task.page_link)  # Auto copy the URL to clipboard
-# print(
-#     f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE + NEW_LINE
-# )
-####################################################
+    # task = client.upload(path=file_path)
+    # copy(task.page_link)  # Auto copy the URL to clipboard
+    # print(
+    #     f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE + NEW_LINE
+    # )
+###################################################
 
 
 def DOWNLOAD():
