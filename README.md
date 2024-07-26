@@ -1,10 +1,10 @@
-# Simple tool to upload and download files on gofile.io (for Free User) 
+# A simple tool to upload and download files on gofile.io (for Free User) 
 
 ### [How to use]
 1.  Run `pip install -r requirements.txt`
-2.  Run `python run.py`
+2.  Run `python main.py`
 3.  Choose and enter an action to upload or download files
-4.  Alternatively, you can simply run `Go.exe` on Windows
+4.  On Windows, you can simply run `GoFileShare.exe`
    
 #
 
