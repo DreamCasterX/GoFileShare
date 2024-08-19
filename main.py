@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from gofilepy import GofileClient
+from gofilepy import gofile as gf
 from os import path, environ, mkdir, getcwd, chdir, getenv, listdir, system
 from sys import exit, stdout, stderr
 from typing import Dict, List
@@ -18,14 +18,13 @@ print(
     r"""
 ╭───────────────────────────────────────╮
 │        Cloud File Sharing Tool        │
-│                                  v1.0 │
+│                                  v2.0 │
 ╰───────────────────────────────────────╯
 """
 )
 
 
 def UPLOAD():
-    client = GofileClient()
     upload_dir = "./Shares"
     if not path.exists(upload_dir):
         mkdir(upload_dir)
@@ -35,58 +34,32 @@ def UPLOAD():
         system("pause" if ps() == "Windows" else "")
         exit()
 
-    ######################################################
-    # 一次傳送多檔，產生不同URL，每一項傳輸完就先印出完成
-    print(f"Uploading files, please wait..." + NEW_LINE)
-    with ThreadPoolExecutor() as executor:
-        futures = [
-            executor.submit(upload_file, client, file, upload_dir) for file in up_files
-        ]
+    all_files_list = []  # Used as argument
+    file_names = []  # Shown on screen
+    for file in up_files:
+        file_path = path.join(upload_dir, file)
+        normalized_path = path.normpath(file_path)
+        all_files_list.append(normalized_path)
+        file_names.append(f"  {path.basename(normalized_path)}")
+    print(f"Uploading the following {len(up_files)} file(s):")
+    print("\033[32m" + "\n".join(file_names) + "\033[0m" + NEW_LINE)
 
-    total_uploaded = len(futures)
-    success_count = 0
-    for future in futures:
-        filename, page_link = future.result()
-        if page_link is None:
-            continue
-        else:
-            success_count += 1
-    print(
-        f"[Uploaded {success_count} out of {total_uploaded} files]"
-        + NEW_LINE
-        + NEW_LINE
-    )
+    gf.gofile_upload(all_files_list, to_single_folder=False)
+    print(NEW_LINE)
+
+    # copy(task.page_link)
 
 
-def upload_file(client, filename, upload_dir):
-    file_path = path.join(upload_dir, filename)
-    try:
-        task = client.upload(path=file_path)
-        copy(task.page_link)
-        print(
-            f"\033[32m{filename}\033[0m{NEW_LINE}Download link: \033[34m{task.page_link}\033[0m{NEW_LINE}",
-            flush=True,
-        )
-        return filename, task.page_link
-    except Exception as e:
-        print(
-            f"\033[31m{filename} - upload FAILED: {e}\033[0m",
-            flush=True,
-        )
-        return filename, None
-
-
-###################################################
 # 一次只能傳送單檔，產生一組URL
-    # for file in up_files:
-    #     file_path = path.join(upload_dir, file)
-    #     print(f"Starting the upload: \033[32m{file}\033[0m")
+# for file in up_files:
+#     file_path = path.join(upload_dir, file)
+#     print(f"Starting the upload: \033[32m{file}\033[0m")
 
-    # task = client.upload(path=file_path)
-    # copy(task.page_link)  # Auto copy the URL to clipboard
-    # print(
-    #     f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE + NEW_LINE
-    # )
+# task = client.upload(path=file_path)
+# copy(task.page_link)  # Auto copy the URL to clipboard
+# print(
+#     f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE + NEW_LINE
+# )
 ###################################################
 
 
