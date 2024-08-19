@@ -130,7 +130,8 @@ def DOWNLOAD():
 
             :return:
             """
-            chdir(download_dir + "\\..")  # 先切到最外層
+
+            chdir(path.join(download_dir, ".."))  # 先切到最外層
 
             with ThreadPoolExecutor(max_workers=self._max_workers) as executor:
                 for item in self._files_link_list:
@@ -394,10 +395,10 @@ def DOWNLOAD():
             url = input("Enter URL: ")
 
             # Run
-            download_dir = getcwd() + "\\Downloads"
+            download_dir = path.join(getcwd(), "Downloads")
             if not path.exists(download_dir):
                 mkdir(download_dir)
-            chdir(download_dir + "\\..")
+                chdir(path.join(download_dir, ".."))
 
             environ["GF_DOWNLOADDIR"] = download_dir
             _print("Downloading files, please wait..." + NEW_LINE + NEW_LINE)
