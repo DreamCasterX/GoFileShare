@@ -6,7 +6,7 @@ authors = ["Mike Lu <mcumaple@hotmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 requests = "^2.32.3"
 pyperclip = "^1.9.0"
 gofilepy = "^0.3.3"

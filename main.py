@@ -369,7 +369,8 @@ def DOWNLOAD():
             data: Dict = response["data"]
 
             if data["type"] == "folder":
-                children_ids: List[str] = data["childrenIds"]
+                children_ids: List[str] = data["children"]
+               
 
                 self._createDir(data["name"])
                 chdir(data["name"])
