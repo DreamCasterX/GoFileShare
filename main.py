@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from gofilepy import gofile as gf
-from os import path, environ, mkdir, getcwd, chdir, getenv, listdir, system
+from os import path, environ, mkdir, getcwd, chdir, getenv, listdir, system, remove
 from sys import exit, stdout, stderr
 from typing import Dict, List
 from requests import get, post
@@ -12,12 +12,13 @@ from shutil import move
 from time import perf_counter
 from pyperclip import copy
 
+
 NEW_LINE: str = "\n" if ps() != "Windows" else "\r\n"
 
 print(
     r"""
 ╭───────────────────────────────────────╮
-│        Cloud File Sharing Tool        │
+│          Go File Sharing Tool         │
 │                                  v2.0 │
 ╰───────────────────────────────────────╯
 """
@@ -36,6 +37,7 @@ def UPLOAD():
 
     all_files_list = []  # Used as argument
     file_names = []  # Shown on screen
+
     for file in up_files:
         file_path = path.join(upload_dir, file)
         normalized_path = path.normpath(file_path)
@@ -44,23 +46,9 @@ def UPLOAD():
     print(f"Uploading the following {len(up_files)} file(s):")
     print("\033[32m" + "\n".join(file_names) + "\033[0m" + NEW_LINE)
 
-    gf.gofile_upload(all_files_list, to_single_folder=False)
+    get_url = gf.gofile_upload(all_files_list, to_single_folder=False, export=False)
+    copy(get_url)  # Manually add 'return url' to the end of gofile_upload() function of gofile.py
     print(NEW_LINE)
-
-    # copy(task.page_link)
-
-
-# 一次只能傳送單檔，產生一組URL
-# for file in up_files:
-#     file_path = path.join(upload_dir, file)
-#     print(f"Starting the upload: \033[32m{file}\033[0m")
-
-# task = client.upload(path=file_path)
-# copy(task.page_link)  # Auto copy the URL to clipboard
-# print(
-#     f"Download link (Copied): \033[34m{task.page_link}\033[0m" + NEW_LINE + NEW_LINE
-# )
-###################################################
 
 
 def DOWNLOAD():
