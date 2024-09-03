@@ -12,7 +12,7 @@
 
 ### [Default file path] 
 
-`Shares` - place any files you want to upload here
+`Uploads` - place any files you want to upload here
 
 `Downloads` - all the downloaded files will be saved here 
 

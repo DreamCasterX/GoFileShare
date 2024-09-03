@@ -25,33 +25,34 @@ print(
 )
 
 
-def UPLOAD():
-    upload_dir = "./Shares"
+def UPLOAD(upload_dir=path.join(getcwd(), "Uploads")):
     if not path.exists(upload_dir):
         mkdir(upload_dir)
+        print(f"\033[32mCreated 'Uploads' directory\033[0m")
     up_files = listdir(upload_dir)
     if not up_files:
-        print(f"\033[33mNo files in 'Shares' folder\033[0m {NEW_LINE}")
-        system("pause" if ps() == "Windows" else "")
-        exit()
+        print(f"\033[33mNo files found in 'Uploads' folder!\033[0m {NEW_LINE}")
+    else:
 
-    all_files_list = []  # Used as argument
-    file_names = []  # Shown on screen
+        all_files_list = []  # Used as argument
+        file_names = []  # Shown on screen
 
-    for file in up_files:
-        file_path = path.join(upload_dir, file)
-        normalized_path = path.normpath(file_path)
-        all_files_list.append(normalized_path)
-        file_names.append(f"  {path.basename(normalized_path)}")
-    print(f"Uploading the following {len(up_files)} file(s):")
-    print("\033[32m" + "\n".join(file_names) + "\033[0m" + NEW_LINE)
+        for file in up_files:
+            file_path = path.join(upload_dir, file)
+            normalized_path = path.normpath(file_path)
+            all_files_list.append(normalized_path)
+            file_names.append(f"  {path.basename(normalized_path)}")
+        print(f"Uploading the following {len(up_files)} file(s):")
+        print("\033[32m" + "\n".join(file_names) + "\033[0m" + NEW_LINE)
 
-    get_url = gf.gofile_upload(all_files_list, to_single_folder=False, export=False)
-    copy(get_url)  # Manually add 'return url' to the end of gofile_upload() function of gofile.py
-    print(NEW_LINE)
+        get_url = gf.gofile_upload(all_files_list, to_single_folder=False, export=False)
+        copy(
+            get_url
+        )  # Manually add 'return url' to the end of gofile_upload() function of gofile.py (line: 144)
+        print(NEW_LINE)
 
 
-def DOWNLOAD():
+def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
     def die(_str: str) -> None:
         """
         Display a message of error and exit.
@@ -359,7 +360,6 @@ def DOWNLOAD():
 
             if data["type"] == "folder":
                 children_ids: List[str] = data["children"]
-               
 
                 self._createDir(data["name"])
                 chdir(data["name"])
@@ -383,9 +383,10 @@ def DOWNLOAD():
             url = input("Enter URL: ")
 
             # Run
-            download_dir = path.join(getcwd(), "Downloads")
+            # download_dir = path.join(getcwd(), "Downloads")
             if not path.exists(download_dir):
                 mkdir(download_dir)
+                print(f"\033[32mCreated 'Downloads' directory\033[0m")
                 chdir(path.join(download_dir, ".."))
 
             environ["GF_DOWNLOADDIR"] = download_dir
@@ -401,10 +402,10 @@ while True:
     if Option == "1":
         UPLOAD()
         continue
-    if Option == "2":
+    elif Option == "2":
         DOWNLOAD()
         continue
-    if Option.lower() == "q":
+    elif Option.lower() == "q":
         break
     else:
         print("\033[33mInvalid option!\033[0m" + NEW_LINE)
