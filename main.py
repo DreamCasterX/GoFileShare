@@ -11,6 +11,10 @@ from hashlib import sha256
 from shutil import move
 from time import perf_counter
 from pyperclip import copy
+from colorama import init, Fore, Style
+
+# Initialize colorama
+init()
 
 
 NEW_LINE: str = "\n" if ps() != "Windows" else "\r\n"
@@ -19,7 +23,7 @@ print(
     r"""
 ╭───────────────────────────────────────╮
 │          Go File Sharing Tool         │
-│                                  v2.0 │
+│                   v1.0                │
 ╰───────────────────────────────────────╯
 """
 )
@@ -28,10 +32,10 @@ print(
 def UPLOAD(upload_dir=path.join(getcwd(), "Uploads")):
     if not path.exists(upload_dir):
         mkdir(upload_dir)
-        print(f"\033[32mCreated 'Uploads' directory\033[0m")
+        print(f"{Fore.GREEN}Created 'Uploads' directory{Style.RESET_ALL}")
     up_files = listdir(upload_dir)
     if not up_files:
-        print(f"\033[33mNo files found in 'Uploads' folder!\033[0m {NEW_LINE}")
+        print(f"{Fore.YELLOW}No files found in 'Uploads' folder!{Style.RESET_ALL}{NEW_LINE}")
     else:
 
         all_files_list = []  # Used as argument
@@ -43,7 +47,7 @@ def UPLOAD(upload_dir=path.join(getcwd(), "Uploads")):
             all_files_list.append(normalized_path)
             file_names.append(f"  {path.basename(normalized_path)}")
         print(f"Uploading the following {len(up_files)} file(s):")
-        print("\033[32m" + "\n".join(file_names) + "\033[0m" + NEW_LINE)
+        print(f"{Fore.CYAN}{NEW_LINE.join(file_names)}{Style.RESET_ALL}{NEW_LINE}")
 
         get_url = gf.gofile_upload(all_files_list, to_single_folder=False, export=False)
         copy(
@@ -87,12 +91,12 @@ def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
             try:
                 if not url.split("/")[-2] == "d":
                     die(
-                        f"\033[31mThe URL probably doesn't have an ID in it: {url}\033[0m"
+                        f"{Fore.RED}The URL probably doesn't have an ID in it: {url}{Style.RESET_ALL}"
                     )
 
                 self._id: str = url.split("/")[-1]
             except IndexError:
-                die(f"\033[31mSomething is wrong with the URL: {url}\033[0m")
+                die(f"{Fore.RED}Something is wrong with the URL: {url}{Style.RESET_ALL}")
 
             self._downloaddir: str | None = getenv("GF_DOWNLOADDIR")
 
@@ -184,7 +188,7 @@ def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
             if path.exists(file_info["path"]):
                 if path.getsize(file_info["path"]) > 0:
                     _print(
-                        f"\033[33m{file_info['filename']} already exist, skipping.\033[0m"
+                        f"{Fore.YELLOW}{file_info['filename']} already exist, skipping.{Style.RESET_ALL}"
                         + NEW_LINE
                     )
 
@@ -237,12 +241,11 @@ def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
 
                         return
 
+                    content_range = response_handler.headers.get("Content-Range")
                     has_size = (
                         response_handler.headers.get("Content-Length")
                         if part_size == 0
-                        else response_handler.headers.get("Content-Range").split("/")[
-                            -1
-                        ]
+                        else content_range.split("/")[-1] if content_range is not None else None
                     )
 
                     if not has_size:
@@ -293,11 +296,11 @@ def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
 
                             _print(message)
             finally:
-                if path.getsize(filename) == int(has_size):
+                if has_size is not None and path.getsize(filename) == int(has_size):
                     _print("\r" + " " * len(message))
 
                     message = (
-                        f"\r\033[32m{file_info['filename']}\033[0m - {path.getsize(filename)} of {has_size} bytes downloaded"
+                        f"{Fore.GREEN}{file_info['filename']}{Style.RESET_ALL} - {path.getsize(filename)} of {has_size} bytes downloaded"
                         + NEW_LINE
                     )
 
@@ -386,7 +389,7 @@ def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
             # download_dir = path.join(getcwd(), "Downloads")
             if not path.exists(download_dir):
                 mkdir(download_dir)
-                print(f"\033[32mCreated 'Downloads' directory\033[0m")
+                print(f"{Fore.GREEN}Created 'Downloads' directory{Style.RESET_ALL}")
                 chdir(path.join(download_dir, ".."))
 
             environ["GF_DOWNLOADDIR"] = download_dir
@@ -398,7 +401,7 @@ def DOWNLOAD(download_dir=path.join(getcwd(), "Downloads")):
 
 
 while True:
-    Option = input("Enter an action: (1) Upload   (2) Download   (Q) Quit" + NEW_LINE)
+    Option = input("Enter your choice: (1) Upload   (2) Download   (Q) Quit  " )
     if Option == "1":
         UPLOAD()
         continue
@@ -407,5 +410,4 @@ while True:
         continue
     elif Option.lower() == "q":
         break
-    else:
-        print("\033[33mInvalid option!\033[0m" + NEW_LINE)
+
